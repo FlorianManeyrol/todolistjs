@@ -11,11 +11,12 @@
           <div class="view">
             <input type="checkbox" class="toggle" v-model="todo.completed">
             <label>{{ todo.name }}</label>
+            <button class="destroy" @click.prevent="deleteTodo(todo)"></button>
           </div>
         </li>
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" v-show="hasTodos">
       <span class="todo-count">
         <strong>{{ remaining }}</strong> Tâches à faire
       </span>
@@ -24,6 +25,7 @@
         <li><a href="#" :class="{selected: filter === 'todo'}" @click.prevent="filter = 'todo'">A faire</a></li>
         <li><a href="#" :class="{selected: filter === 'done'}" @click.prevent="filter = 'done'">Faites</a></li>
       </ul>
+      <button class="clear-completed" v-show="doneTodo" @click.prevent="deleteCompleted">Supp</button>
     </div>
   </section>
 </template>
@@ -47,6 +49,9 @@
           name: this.newTodo
         })
         this.newTodo = ''
+      },
+      deleteTodo (todo) {
+        this.todos = this.todos.filter(i => i !== todo)
       }
     },
     computed: {
@@ -70,6 +75,15 @@
           return this.todos.filter(todo => todo.completed)
         }
         return this.todos
+      },
+      hasTodos () {
+        return this.todos.length > 0
+      },
+      doneTodo () {
+        return this.todos.filter(todo => todo.completed).length > 0
+      },
+      deleteCompleted () {
+        this.todos = this.todos.filter(todo => !todo.completed)
       }
     }
   }
